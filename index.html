@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#101827">
+  <title>SecureConnect</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <!-- Header -->
+    <header class="top">
+      <div class="brand-mark">⌂</div>
+      <div>
+        <p class="eyebrow">SMART HOME PROTOTYPE</p>
+        <h1>SecureConnect</h1>
+      </div>
+      <div class="top-actions">
+        <button id="settingsToggleBtn" class="icon-button" type="button" title="API Settings">⚙️</button>
+        <span class="demo-pill" id="enginePill">Secure your Home</span>
+      </div>
+    </header>
+
+    <!-- Settings Panel (Collapsible) -->
+    <section class="panel settings-panel hidden" id="settingsPanel">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">CONFIG</p>
+          <h3>Gemini & Voice Settings</h3>
+        </div>
+        <button id="closeSettingsBtn" class="text-button" type="button">Close</button>
+      </div>
+      <div class="settings-grid">
+        <div class="field-group">
+          <label for="apiKeyInput">Gemini API Key</label>
+          <div class="input-with-action">
+            <input id="apiKeyInput" type="password" placeholder="AIzaSy... or AQ....">
+            <button id="toggleKeyVisibility" class="small-button" type="button">Show</button>
+          </div>
+          <small class="helper-text">Stored locally in your browser (never leaves your device).</small>
+        </div>
+
+        <div class="field-row">
+          <div class="field-group half">
+            <label for="modelSelect">Gemini Model</label>
+            <select id="modelSelect">
+              <option value="gemini-3.5-flash-lite" selected>gemini-3.5-flash-lite (Fastest)</option>
+              <option value="gemini-3.8-flash">gemini-3.8-flash</option>
+              <option value="gemini-2.5-flash">gemini-2.5-flash</option>
+            </select>
+          </div>
+
+          <div class="field-group half">
+            <label for="speechLangSelect">Speech Input Lang</label>
+            <select id="speechLangSelect">
+              <option value="hi-IN" selected>Hindi / Hinglish (hi-IN)</option>
+              <option value="en-IN">English India (en-IN)</option>
+              <option value="en-US">English US (en-US)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="setting-checkbox-row">
+          <label class="checkbox-label">
+            <input type="checkbox" id="ttsCheckbox" checked>
+            <span>Speak replies aloud (Text-to-Speech)</span>
+          </label>
+          <button id="saveSettingsBtn" class="small-button primary" type="button">Save Settings</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Welcome Card -->
+    <section class="welcome panel">
+      <p class="eyebrow">SMART DOOR LOCK & HOME AUTOMATION</p>
+      <h2>Speak naturally.<br><span>Your Door. Your Voice.</span></h2>
+      <p class="sub">A voice-controlled smart door lock system powered by Microcontrollers and AI. Lock or unlock your door using natural voice commands in Hindi, English, or Hinglish, and control your lights and fan from one smart dashboard.</p>
+      <div class="mode-row">
+        <span class="mode-dot" id="statusDot"></span>
+        <span id="modeText">Ready · Voice Assistant & Smart Device Control</span>
+      </div>
+    </section>
+
+    <!-- Voice & AI Assistant Section -->
+    <section class="voice panel" id="assistant">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">YOUR ASSISTANT</p>
+          <h2>Voice control</h2>
+        </div>
+        <span id="micSupport" class="support-tag">Checking mic…</span>
+      </div>
+
+      <!-- Microphone Button -->
+      <button id="micButton" class="mic-button" type="button" aria-label="Start voice recognition">
+        <span class="mic-icon" id="micIcon">🎙️</span>
+        <span id="micButtonText">Tap to speak</span>
+      </button>
+
+      <p id="voiceStatus" class="voice-status" role="status" aria-live="polite">Tap the microphone and say any command.</p>
+
+      <!-- What I Heard Box -->
+      <div class="heard-box">
+        <div class="box-head">
+          <span class="mini-label">WHAT I HEARD</span>
+        </div>
+        <p id="transcript">Your spoken command or typed text will appear here…</p>
+      </div>
+
+      <!-- Interpretation / Response Box -->
+      <div class="heard-box result-box">
+        <div class="box-head">
+          <span class="mini-label">ASSISTANT RESPONSE</span>
+          <div class="response-tools">
+            <span id="sourceBadge" class="source-badge">Gemini</span>
+            <button id="replaySpeechBtn" class="icon-subtle-btn" type="button" title="Speak reply">🔊</button>
+          </div>
+        </div>
+        <p id="interpretation">Waiting for your command.</p>
+      </div>
+
+      <!-- Text Input Fallback (Works everywhere even if mic is blocked) -->
+      <form id="textCommandForm" class="text-fallback-form">
+        <input id="textCommandInput" type="text" placeholder="Or type in Hindi/English/Hinglish (e.g. fan band karo)…" autocomplete="off">
+        <button id="textSubmitBtn" type="submit" class="small-button primary">Send</button>
+      </form>
+
+      <!-- Quick Test Chips -->
+      <div class="example-list">
+        <span class="mini-label">TRY SAYING OR CLICKING</span>
+        <div class="chips">
+          <button class="chip" data-command="fan band karo">“Fan band karo”</button>
+          <button class="chip" data-command="darwaza kholo">“Darwaza kholo”</button>
+          <button class="chip" data-command="bedroom ki light jala do">“Bedroom ki light jala do”</button>
+          <button class="chip" data-command="hall ki light band kar do">“Hall ki light band kar do”</button>
+          <button class="chip" data-command="light band karo">“Light band karo” (Ambiguous test)</button>
+          <button class="chip" data-command="what is the capital of India?">“Capital of India?”</button>
+          <button class="chip" data-command="what can you do?">“What can you do?”</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Simulated Devices Section -->
+    <section class="devices-section" id="devices">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">SIMULATED DEVICES</p>
+          <h2>Device controls</h2>
+        </div>
+        <button id="resetButton" class="text-button" type="button">Reset demo</button>
+      </div>
+
+      <div class="device-grid">
+        <!-- Main Door -->
+        <article class="device-card" id="cardDoor">
+          <div class="device-icon">🚪</div>
+          <div class="device-info">
+            <h3>Main door</h3>
+            <p id="doorState">Locked · simulated</p>
+          </div>
+          <span id="doorBadge" class="state-badge">LOCKED</span>
+          <div class="card-actions">
+            <button id="unlockButton" class="small-button primary" type="button">Unlock</button>
+            <button id="lockButton" class="small-button" type="button">Lock</button>
+          </div>
+        </article>
+
+        <!-- Bedroom Light -->
+        <article class="device-card" id="cardBedroom">
+          <div class="device-icon">💡</div>
+          <div class="device-info">
+            <h3>Bedroom light</h3>
+            <p id="bedroomState">Off · simulated</p>
+          </div>
+          <label class="toggle" aria-label="Toggle Bedroom light">
+            <input id="bedroomToggle" type="checkbox">
+            <span></span>
+          </label>
+          <div class="light-glow" id="bedroomGlow"></div>
+        </article>
+
+        <!-- Hall Light -->
+        <article class="device-card" id="cardHall">
+          <div class="device-icon">🌤️</div>
+          <div class="device-info">
+            <h3>Hall light</h3>
+            <p id="hallState">Off · simulated</p>
+          </div>
+          <label class="toggle" aria-label="Toggle Hall light">
+            <input id="hallToggle" type="checkbox">
+            <span></span>
+          </label>
+          <div class="light-glow" id="hallGlow"></div>
+        </article>
+
+        <!-- Ceiling Fan -->
+        <article class="device-card" id="cardFan">
+          <div class="device-icon">🌀</div>
+          <div class="device-info">
+            <h3>Ceiling fan</h3>
+            <p id="fanState">Off · simulated</p>
+          </div>
+          <label class="toggle" aria-label="Toggle Ceiling fan">
+            <input id="fanToggle" type="checkbox">
+            <span></span>
+          </label>
+          <div class="fan-art" id="fanArt">✳</div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Conversation History -->
+    <section class="panel history-section" id="historySection">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">ACTIVITY LOG</p>
+          <h3>Conversation history</h3>
+        </div>
+        <button id="clearHistoryBtn" class="text-button" type="button">Clear</button>
+      </div>
+      <div id="historyList" class="history-list">
+        <p class="history-empty">No commands yet. Speak or type above to start.</p>
+      </div>
+    </section>
+
+    <!-- Info Note -->
+    <section class="setup-note panel">
+      <h3>Testing on Phone & XPOS</h3>
+      <ul>
+        <!-- <li><strong>Frontend Only:</strong> No Node.js backend required! Direct connection to Gemini API from your browser.</li> -->
+        <li><strong>Microphone Permission:</strong> On Android or XPOS, ensure microphone permission is allowed for the browser.</li>
+        <li><strong>Text Input:</strong> If speech recognition is not supported in the WebView, simply use the text box.</li>
+        <li><strong>Safe Simulation:</strong> All device operations are simulated on this dashboard. No hardware is affected.</li>
+      </ul>
+    </section>
+
+    <footer>SECURECONNECT · DIRECT GEMINI VOICE EDITION</footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
